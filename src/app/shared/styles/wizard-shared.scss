@@ -1,0 +1,684 @@
+
+@use "./variables.scss" as *;
+
+:host {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  font-family: 'Pragmatica', var(--bs-body-font-family, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif);
+}
+
+.pp-page {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+.pp-main {
+  flex: 1 0 auto !important;
+  /* Permite que el main tome todo el espacio disponible y empuje al footer */
+}
+
+@media (prefers-reduced-motion: reduce) {
+
+  .pp-page,
+  .pp-page *,
+  .pp-page *::before,
+  .pp-page *::after {
+    transition: none !important;
+    animation: none !important;
+  }
+}
+
+.pp-wizard {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 0 1.25rem 2.5rem;
+}
+
+.pp-wizard__stepper {
+  display: flex;
+  align-items: flex-start;
+  margin-bottom: 2.5rem;
+  padding-top: 2rem;
+}
+
+.pp-wizard__step {
+  all: unset;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  cursor: pointer;
+  flex-shrink: 0;
+
+  &:focus-visible .pp-wizard__circle {
+    outline: 3px solid $purpose-blue;
+    outline-offset: 3px;
+  }
+}
+
+.pp-wizard__circle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  border: 2px solid $track-bg;
+  background: #fff;
+  color: $text-muted;
+  font-weight: 800;
+  font-size: 1rem;
+  transition: background 0.25s ease, border-color 0.25s ease, color 0.25s ease, box-shadow 0.25s ease;
+}
+
+.pp-wizard__label {
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  color: $text-muted;
+  text-align: center;
+  transition: color 0.25s ease;
+}
+
+.pp-wizard__step.is-active {
+  .pp-wizard__circle {
+    background: $purpose-blue;
+    border-color: $purpose-blue;
+    color: #fff;
+    box-shadow: 0 0 0 4px rgba($purpose-blue, 0.18);
+  }
+
+  .pp-wizard__label {
+    color: $charcoal;
+  }
+}
+
+.pp-wizard__step.is-complete {
+  .pp-wizard__circle {
+    background: $clean-green;
+    border-color: $clean-green;
+    color: #fff;
+  }
+
+  .pp-wizard__label {
+    color: $charcoal;
+  }
+}
+
+.pp-wizard__track {
+  flex: 1;
+  height: 3px;
+  background: $track-bg;
+  margin: 20px 0.75rem 0;
+  border-radius: 999px;
+  overflow: hidden;
+}
+
+.pp-wizard__track-fill {
+  display: block;
+  height: 100%;
+  background: $parker-gold;
+  width: 0;
+  transition: width 0.4s ease;
+}
+
+.pp-wizard__card {
+  background: #fff;
+  border: 1px solid $track-bg;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 2px 12px rgba($charcoal, 0.06);
+}
+
+.pp-wizard__body {
+  padding: 2rem 1.75rem;
+  min-height: 180px;
+  color: $charcoal;
+}
+
+.pp-wizard__actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 1.1rem 1.75rem;
+  background: #fafbfc;
+  border-top: 1px solid $track-bg;
+
+  &--end {
+    justify-content: flex-end;
+  }
+}
+
+.pp-wizard__btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  border: none;
+  border-radius: 6px;
+  font-weight: 800;
+  font-size: 0.85rem;
+  letter-spacing: 0.03em;
+  padding: 0.65rem 1.5rem;
+  cursor: pointer;
+  transition: transform 0.15s ease, box-shadow 0.2s ease, background 0.2s ease,
+    border-color 0.2s ease, color 0.2s ease;
+
+  i {
+    font-size: 0.85rem;
+  }
+
+  &:active:not(:disabled) {
+    transform: scale(0.97);
+  }
+
+  &:focus-visible {
+    outline: 3px solid $purpose-blue;
+    outline-offset: 2px;
+  }
+
+  &:disabled {
+    opacity: 0.45;
+    cursor: not-allowed;
+    transform: none;
+  }
+
+  &--ghost {
+    background: #fff;
+    color: $charcoal;
+    border: 1.5px solid darken($track-bg, 8%);
+
+    &:hover:not(:disabled) {
+      background: $charcoal;
+      border-color: $charcoal;
+      color: #fff;
+    }
+  }
+
+  &--primary {
+    background: $parker-gold;
+    color: $charcoal;
+    box-shadow: 0 2px 8px rgba($parker-gold, 0.35);
+
+    &:hover {
+      background: darken($parker-gold, 4%);
+      box-shadow: 0 6px 16px rgba($parker-gold, 0.45);
+      transform: translateY(-1px);
+    }
+  }
+}
+
+@include respond(sm) {
+  .pp-wizard {
+    padding: 0 1rem 2rem;
+  }
+
+  .pp-wizard__stepper {
+    padding-top: 1.25rem;
+    margin-bottom: 1.75rem;
+  }
+
+  .pp-wizard__label {
+    font-size: 0.6rem;
+  }
+
+  .pp-wizard__circle {
+    width: 36px;
+    height: 36px;
+    font-size: 0.9rem;
+  }
+
+  .pp-wizard__body {
+    padding: 1.5rem 1.25rem;
+  }
+
+  .pp-wizard__actions {
+    flex-direction: column-reverse;
+    align-items: stretch;
+    padding: 1rem 1.25rem;
+
+    &--end {
+      flex-direction: column;
+    }
+  }
+
+  .pp-wizard__btn {
+    width: 100%;
+    justify-content: center;
+  }
+}
+
+
+$danger: #dc3545;
+
+.pp-hint {
+  font-size: 0.75rem;
+  color: $text-muted;
+}
+
+.pp-upload__input-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+  overflow: hidden;
+}
+
+.pp-upload__xml {
+  border: 1.5px dashed $track-bg;
+  border-radius: 10px;
+  transition: border-color 0.2s ease, background 0.2s ease;
+
+  &.is-invalid {
+    border-color: $danger;
+  }
+}
+
+.pp-upload__zone {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 1.75rem 1rem;
+  cursor: pointer;
+  color: $text-muted;
+  text-align: center;
+
+  i {
+    font-size: 1.9rem;
+    color: $purpose-blue;
+  }
+
+  &-title {
+    font-weight: 700;
+    color: $charcoal;
+    font-size: 0.9rem;
+  }
+
+  &-hint {
+    font-size: 0.75rem;
+  }
+
+  &:hover {
+    background: rgba($purpose-blue, 0.04);
+  }
+}
+
+.pp-upload__file {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.85rem 1.1rem;
+
+  i {
+    font-size: 1.4rem;
+    color: $clean-green;
+  }
+
+  &-name {
+    flex: 1;
+    font-weight: 600;
+    font-size: 0.85rem;
+    color: $charcoal;
+    word-break: break-all;
+  }
+}
+
+.pp-upload__remove,
+.pp-file-list__remove {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.pp-upload__remove {
+  border: none;
+  background: transparent;
+  color: $text-muted;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  cursor: pointer;
+  transition: background 0.2s ease, color 0.2s ease;
+
+  &:hover {
+    background: rgba($danger, 0.1);
+    color: $danger;
+  }
+}
+
+.pp-dropzone {
+  position: relative;
+  border: 2px dashed $track-bg;
+  border-radius: 10px;
+  background: #fafbfc;
+  transition: border-color 0.2s ease, background 0.2s ease, opacity 0.2s ease;
+
+  &.is-dragging {
+    border-color: $purpose-blue;
+    background: rgba($purpose-blue, 0.05);
+  }
+
+  &.is-invalid {
+    border-color: $danger;
+  }
+
+  &.is-disabled {
+    opacity: 0.55;
+    pointer-events: none;
+
+    .pp-dropzone__label {
+      cursor: not-allowed;
+    }
+  }
+}
+
+.pp-dropzone__label {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 2rem 1rem;
+  cursor: pointer;
+  text-align: center;
+
+  i {
+    font-size: 2rem;
+    color: $purpose-blue;
+  }
+}
+
+.pp-dropzone__title {
+  font-weight: 700;
+  color: $charcoal;
+  font-size: 0.9rem;
+}
+
+.pp-dropzone__hint {
+  font-size: 0.75rem;
+  color: $text-muted;
+}
+
+.pp-file-list {
+  list-style: none;
+  margin: 0.9rem 0 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.pp-file-list__item {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.65rem 0.9rem;
+  border: 1px solid $track-bg;
+  border-radius: 8px;
+  background: #fff;
+
+  i {
+    font-size: 1.25rem;
+    color: $orange;
+  }
+}
+
+.pp-file-list__info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  line-height: 1.2;
+  min-width: 0;
+}
+
+.pp-file-list__name {
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: $charcoal;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.pp-file-list__size {
+  font-size: 0.72rem;
+  color: $text-muted;
+}
+
+.pp-file-list__remove {
+  border: none;
+  background: transparent;
+  color: $text-muted;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  cursor: pointer;
+  transition: background 0.2s ease, color 0.2s ease;
+
+  &:hover {
+    background: rgba($danger, 0.1);
+    color: $danger;
+  }
+}
+
+.pp-result {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 0.75rem;
+  padding: 1.5rem 1rem 1rem;
+
+  &__icon {
+    font-size: 3rem;
+    color: $clean-green;
+    margin-bottom: 0.25rem;
+  }
+
+  &__text {
+    max-width: 520px;
+    margin: 0;
+    color: $charcoal;
+    font-size: 0.95rem;
+    line-height: 1.55;
+  }
+
+  &__trackid {
+    display: flex;
+    align-items: center;
+    gap: 0.65rem;
+    background: rgba($purpose-blue, 0.06);
+    border: 1.5px dashed $purpose-blue;
+    border-radius: 8px;
+    padding: 0.75rem 1.25rem;
+    margin: 0.25rem 0;
+
+    span {
+      font-family: 'Courier New', monospace;
+      font-weight: 800;
+      font-size: 1.05rem;
+      letter-spacing: 0.05em;
+      color: $deep-blue;
+    }
+  }
+
+  &__copy {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: none;
+    background: transparent;
+    color: $purpose-blue;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    cursor: pointer;
+    transition: background 0.2s ease;
+    flex-shrink: 0;
+
+    &:hover {
+      background: rgba($purpose-blue, 0.12);
+    }
+  }
+
+  &__division {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: rgba($deep-blue, 0.06);
+    border-radius: 999px;
+    padding: 0.35rem 1rem;
+    font-size: 0.85rem;
+    color: $deep-blue;
+
+    i {
+      font-size: 0.95rem;
+    }
+
+    strong {
+      font-family: 'Courier New', monospace;
+      letter-spacing: 0.03em;
+    }
+  }
+
+  &__info {
+    width: 100%;
+    max-width: 800px;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1rem;
+    background: rgba($charcoal, 0.03);
+    border: 1px solid rgba($charcoal, 0.1);
+    border-radius: 10px;
+    padding: 1rem 1.25rem;
+    margin: 0.25rem 0;
+    text-align: left;
+  }
+
+  &__info-item {
+    display: flex;
+    flex-direction: column;
+    gap: 0.15rem;
+    min-width: 0;
+  }
+
+  &__info-label {
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: rgba($charcoal, 0.6);
+    font-weight: 600;
+  }
+
+  &__info-value {
+    font-size: 0.9rem;
+    font-weight: 700;
+    color: $deep-blue;
+    overflow-wrap: anywhere;
+  }
+
+  &__barcode {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.35rem;
+    background: #fff;
+    border: 1px solid rgba($charcoal, 0.12);
+    border-radius: 8px;
+    padding: 0.75rem 1rem 0.5rem;
+    margin: 0.25rem 0;
+  }
+
+  &__barcode-svg {
+    width: 100%;
+    max-width: 360px;
+    height: 60px;
+
+    rect {
+      fill: $charcoal;
+    }
+  }
+
+  &__barcode-label {
+    font-family: 'Courier New', monospace;
+    font-size: 0.75rem;
+    letter-spacing: 0.15em;
+    color: rgba($charcoal, 0.7);
+  }
+
+  &__download {
+    margin: 0.25rem 0 0.5rem;
+  }
+
+  @include respond(sm) {
+    &__icon {
+      font-size: 2.5rem;
+    }
+
+    &__trackid {
+      flex-direction: column;
+      gap: 0.4rem;
+
+      span {
+        font-size: 0.9rem;
+        word-break: break-all;
+      }
+    }
+
+    &__info {
+      grid-template-columns: 1fr;
+    }
+
+    &__barcode-svg {
+      max-width: 100%;
+    }
+  }
+}
+
+.pp-wizard__notice {
+  background-color: rgba($purpose-blue, 0.05);
+  border: 1px solid rgba($purpose-blue, 0.2);
+  border-left: 4px solid $purpose-blue;
+  border-radius: 8px;
+  padding: 0.85rem 1.1rem;
+
+  i {
+    color: $purpose-blue !important;
+  }
+}
+
+.pp-divider-or {
+  display: flex;
+  align-items: center;
+  text-align: center;
+  color: $text-muted;
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  margin: 0.25rem 0;
+
+  &::before,
+  &::after {
+    content: '';
+    flex: 1;
+    border-bottom: 1px dashed darken($track-bg, 5%);
+  }
+
+  span {
+    padding: 0 0.75rem;
+    background: #ffffff;
+    color: lighten($charcoal, 15%);
+  }
+}
+
+.fs-10 {
+  font-size: 0.65rem !important;
+}
+
+.fs-13 {
+  font-size: 0.82rem !important;
+}

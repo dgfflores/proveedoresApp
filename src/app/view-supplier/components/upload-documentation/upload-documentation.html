@@ -1,0 +1,142 @@
+<div class="pp-page">
+
+  <main class="pp-main px-3 px-md-4">
+    <div class="pp-wizard mt-3 w-100 max-w-none">
+
+      <div class="pp-wizard__card pp-wizard__card--wide w-100">
+        
+        <div class="pp-wizard__header border-bottom pb-3 mb-4">
+          <h1 class="fw-bold text-dark mb-1 ms-3 mt-3">Carga de Expediente REPSE</h1>
+          <p class="text-muted fs-12 mb-0 ms-3 mt-3">
+            Adjunta la documentación requerida para la validación de cumplimiento fiscal y legal.
+          </p>
+        </div>
+
+        <div class="pp-wizard__body">
+
+          <div class="pp-timer-alert mb-4" [class.pp-timer-alert--warning]="isTimerWarning()">
+            <div class="d-flex align-items-center justify-content-between flex-wrap gap-2">
+              <div class="d-flex align-items-center gap-2">
+                <i class="bi bi-clock-history fs-5"></i>
+                <div>
+                  <span class="fw-bold d-block fs-13">Vigencia de la Liga Temporal</span>
+                  <span class="fs-11 opacity-75">
+                    Completa la carga de tus documentos requeridos antes de que expire el acceso.
+                  </span>
+                </div>
+              </div>
+              <div class="pp-timer-badge">
+                <i class="bi bi-stopwatch"></i>
+                <span>{{ formattedTimeLeft() }}</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="pp-supplier-info p-3 mb-4 rounded border bg-light d-flex align-items-center justify-content-between flex-wrap gap-2">
+            <div>
+              <span class="fs-10 text-uppercase text-muted d-block fw-bold">Razón Social</span>
+              <span class="fs-14 fw-bold text-dark">{{ supplierName() }}</span>
+            </div>
+            <div class="text-end">
+              <span class="fs-10 text-uppercase text-muted d-block fw-bold">Documentos Solicitados</span>
+              <span class="badge bg-primary fs-12 px-2 py-1">{{ totalRequiredDocs() }} Requisitos</span>
+            </div>
+          </div>
+
+          <form [formGroup]="uploadForm" autocomplete="off">
+            <div class="d-flex flex-column gap-4">
+              
+              @for (category of categories(); track category.code) {
+                <div class="pp-repse-category border rounded p-3 bg-white shadow-xs">
+                  
+                  <div class="pp-repse-category__header pb-2 mb-3 border-bottom d-flex align-items-center gap-2">
+                    <i class="bi bi-folder-fill text-primary"></i>
+                    <h6 class="fw-bold text-dark mb-0 fs-13">{{ category.categoryName }}</h6>
+                  </div>
+
+                  <div class="row gx-3 gy-3">
+                    @for (doc of category.documents; track doc.id) {
+                      <div class="col-md-6 col-lg-3">
+                        <div class="pp-upload-field p-3 border rounded h-100 d-flex flex-column justify-content-between" 
+                          [class.pp-upload-field--uploaded]="hasFile(doc.id)"
+                          [class.pp-upload-field--invalid]="isDocInvalid(doc.id) || fileErrorMsgs().has(doc.id)">
+                          
+                          <div>
+                            <div class="d-flex justify-content-between align-items-start mb-1 gap-2">
+                              <div>
+                                <span class="badge bg-secondary me-1 fs-10">{{ doc.codeNumber }}</span>
+                                <span class="fw-bold fs-12 text-dark">{{ doc.name }}</span>
+                              </div>
+                              <span class="badge fs-10" [ngClass]="getBadgeClass(doc.badgeTag || '')">
+                                {{ doc.badgeTag }}
+                              </span>
+                            </div>
+
+                            <p class="text-muted fs-11 mb-3">{{ doc.description }}</p>
+                          </div>
+
+                          <div class="pp-upload-field__control">
+                            @if (!getFile(doc.id)) {
+                              <label [for]="'file-' + doc.id" class="btn btn-sm btn-outline-primary w-100 fs-11 d-flex align-items-center justify-content-center gap-1 cursor-pointer py-2">
+                                <i class="bi bi-cloud-upload"></i> Seleccionar archivo ({{ doc.badgeTag === 'XML/PDF' ? '.xml / .pdf' : '.pdf' }})
+                              </label>
+                              <input type="file" [id]="'file-' + doc.id" class="d-none" 
+                                [accept]="doc.badgeTag === 'XML/PDF' ? '.pdf,.xml' : '.pdf'"
+                                (change)="onFileSelected($event, doc.id, doc.badgeTag || '')" />
+                            } @else {
+                              <div class="d-flex align-items-center justify-content-between bg-light p-2 rounded border">
+                                <div class="d-flex align-items-center gap-2 text-truncate">
+                                  <i class="bi" [ngClass]="getFileIcon(getFile(doc.id)?.name)"></i>
+                                  <span class="fs-11 fw-semibold text-truncate">{{ getFile(doc.id)?.name }}</span>
+                                </div>
+                                <button type="button" class="btn btn-sm btn-link text-danger p-0 ms-2" (click)="removeFile(doc.id)" title="Quitar archivo">
+                                  <i class="bi bi-trash-fill fs-12"></i>
+                                </button>
+                              </div>
+                            }
+
+                            @if (fileErrorMsgs().has(doc.id)) {
+                              <div class="d-flex align-items-center gap-1 text-danger fs-11 mt-2">
+                                <i class="bi bi-exclamation-circle-fill"></i>
+                                <span>{{ fileErrorMsgs().get(doc.id) }}</span>
+                              </div>
+                            }
+
+                            @if (isDocInvalid(doc.id) && !fileErrorMsgs().has(doc.id)) {
+                              <span class="text-danger fs-11 mt-1 d-block">Este documento es obligatorio.</span>
+                            }
+                          </div>
+
+                        </div>
+                      </div>
+                    }
+                  </div>
+
+                </div>
+              }
+
+            </div>
+          </form>
+
+        </div>
+
+        <div class="pp-wizard__actions pp-wizard__actions--end mt-4 pt-3 border-top">
+          <button type="button" class="pp-wizard__btn pp-wizard__btn--primary px-4 py-2" 
+            [disabled]="isSubmitting() || timeLeftSeconds() <= 0" (click)="submitExpediente()">
+            @if (isSubmitting()) {
+              <span class="spinner-border spinner-border-sm me-1" role="status" aria-hidden="true"></span>
+              Enviando Documentación...
+            } @else {
+              Enviar Documentación REPSE
+              <i class="bi bi-send-fill ms-1"></i>
+            }
+          </button>
+        </div>
+
+      </div>
+
+    </div>
+  </main>
+
+
+</div>

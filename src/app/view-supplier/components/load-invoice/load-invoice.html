@@ -1,0 +1,204 @@
+<main class="pp-main">
+  <div class="pp-wizard mt-3">
+
+    <app-wizard-stepper [steps]="[{ label: 'INFORMACIÓN' }, { label: 'DOCUMENTACIÓN' }, { label: 'RESULTADO' }]"
+      [current]="currentStep()" (stepClick)="goToStep($event)" />
+
+    <form [formGroup]="myForm" autocomplete="off">
+      <div class="pp-wizard__card">
+        <div class="pp-wizard__body">
+
+          <div [hidden]="currentStep() !== 1">
+            <div class="row gx-3 gy-3">
+              <div class="col-md-6">
+                <label for="rfc_receptor" class="form-label">RFC receptor:</label>
+                <input type="text" class="form-control form-control-sm text-uppercase" id="rfc_receptor" maxlength="13"
+                  formControlName="rfc_receptor" placeholder="XAXX010101000"
+                  [ngClass]="{'is-invalid': isValidField('rfc_receptor')}" autocomplete="off" />
+                @if (isValidField('rfc_receptor')) {
+                <div class="invalid-feedback">{{ getFieldError('rfc_receptor') }}</div>
+                }
+              </div>
+
+              <div class="col-md-6">
+                <label for="razon_social" class="form-label">División:</label>
+                <ng-select [items]="companiesService.companiesListSignal()" bindLabel="bussiness_name" bindValue="id"
+                  placeholder="Seleccione una razón social" formControlName="razon_social"
+                  [ngClass]="{'is-invalid': isValidField('razon_social')}" [clearable]="true" [searchable]="true"
+                  [loading]="!companiesService.companiesListSignal().length" loadingText="Cargando razones sociales..."
+                  notFoundText="No se encontraron resultados">
+                  <ng-template ng-option-tmp let-item="item">
+                    <div class="construction-option">
+                      <div class="fw-semibold">{{ item.bussiness_name }}</div>
+                      <small class="text-muted">{{ item.rfc }}</small>
+                    </div>
+                  </ng-template>
+                </ng-select>
+                @if (isValidField('razon_social')) {
+                <div class="invalid-feedback d-block">{{ getFieldError('razon_social') }}</div>
+                }
+              </div>
+
+              <div class="col-md-6">
+                <label for="email_acuse" class="form-label">Correo destinatario del acuse:</label>
+                <input type="email" class="form-control form-control-sm" id="email_acuse" formControlName="email_acuse"
+                  [ngClass]="{'is-invalid': isValidField('email_acuse')}" autocomplete="new-password" />
+                @if (isValidField('email_acuse')) {
+                <div class="invalid-feedback">{{ getFieldError('email_acuse') }}</div>
+                }
+              </div>
+
+              <div class="col-md-6">
+                <label for="email_acuse_confirm" class="form-label">Confirmar correo:</label>
+                <input type="email" class="form-control form-control-sm" id="email_acuse_confirm"
+                  formControlName="email_acuse_confirm" (paste)="blockPaste($event)" (copy)="blockPaste($event)"
+                  (drop)="blockPaste($event)" [ngClass]="{'is-invalid': isValidField('email_acuse_confirm')}"
+                  autocomplete="new-password" />
+                @if (isValidField('email_acuse_confirm')) {
+                <div class="invalid-feedback">{{ getFieldError('email_acuse_confirm') }}</div>
+                }
+              </div>
+
+              <div class="col-md-4">
+                <label for="codigo_envio" class="form-label">
+                  Código de envío <span class="pp-hint">(opcional)</span>:
+                </label>
+                <input type="text" class="form-control form-control-sm" id="codigo_envio" maxlength="10"
+                  formControlName="codigo_envio" [ngClass]="{'is-invalid': isValidField('codigo_envio')}"
+                  autocomplete="new-password" />
+                @if (isValidField('codigo_envio')) {
+                <div class="invalid-feedback">{{ getFieldError('codigo_envio') }}</div>
+                }
+              </div>
+            </div>
+          </div>
+
+          <div [hidden]="currentStep() !== 2">
+            <div class="pp-upload">
+              <label class="form-label">XML de la factura:</label>
+              @if (!xmlUpload.fileName()) {
+              <div class="pp-dropzone" [class.is-dragging]="xmlUpload.isDragging()"
+                [class.is-invalid]="isValidField('xml_file')" (dragover)="xmlUpload.onDragOver($event)"
+                (dragleave)="xmlUpload.onDragLeave($event)" (drop)="xmlUpload.onDrop($event)">
+                <input type="file" id="xml_file" accept=".xml" class="pp-upload__input-hidden"
+                  (change)="xmlUpload.onSelected($event)" />
+                <label for="xml_file" class="pp-dropzone__label">
+                  <i class="bi bi-filetype-xml"></i>
+                  <span class="pp-dropzone__title">Arrastra el XML aquí o haz clic para buscarlo</span>
+                  <span class="pp-dropzone__hint">Formato permitido: .xml</span>
+                </label>
+              </div>
+              } @else {
+              <div class="pp-upload__xml">
+                <div class="pp-upload__file">
+                  <i class="bi bi-file-earmark-check-fill"></i>
+                  <span class="pp-upload__file-name">{{ xmlUpload.fileName() }}</span>
+                  <button type="button" class="pp-upload__remove" (click)="xmlUpload.remove()">
+                    <i class="bi bi-x-lg"></i>
+                  </button>
+                </div>
+              </div>
+              }
+              @if (isValidField('xml_file')) {
+              <div class="invalid-feedback d-block">{{ getFieldError('xml_file') }}</div>
+              }
+
+              <label class="form-label mt-4">PDF de la factura:</label>
+              @if (!pdfUnicoUpload.fileName()) {
+              <div class="pp-dropzone" [class.is-dragging]="pdfUnicoUpload.isDragging()"
+                [class.is-invalid]="isValidField('pdf_unico')" (dragover)="pdfUnicoUpload.onDragOver($event)"
+                (dragleave)="pdfUnicoUpload.onDragLeave($event)" (drop)="pdfUnicoUpload.onDrop($event)">
+                <input type="file" id="pdf_unico" accept=".pdf" class="pp-upload__input-hidden"
+                  (change)="pdfUnicoUpload.onSelected($event)" />
+                <label for="pdf_unico" class="pp-dropzone__label">
+                  <i class="bi bi-filetype-pdf"></i>
+                  <span class="pp-dropzone__title">Arrastra el PDF aquí o haz clic para buscarlo</span>
+                  <span class="pp-dropzone__hint">Formato permitido: .pdf · hasta 2MB</span>
+                </label>
+              </div>
+              } @else {
+              <div class="pp-upload__xml">
+                <div class="pp-upload__file">
+                  <i class="bi bi-file-earmark-check-fill"></i>
+                  <span class="pp-upload__file-name">{{ pdfUnicoUpload.fileName() }}</span>
+                  <button type="button" class="pp-upload__remove" (click)="pdfUnicoUpload.remove()">
+                    <i class="bi bi-x-lg"></i>
+                  </button>
+                </div>
+              </div>
+              }
+              @if (isValidField('pdf_unico')) {
+              <div class="invalid-feedback d-block">{{ getFieldError('pdf_unico') }}</div>
+              }
+
+              <label class="form-label mt-4">Documentos PDF de soporte:</label>
+
+              @if (pdfFilesUpload.hasSlotsAvailable) {
+              <div class="pp-dropzone" [class.is-dragging]="pdfFilesUpload.isDragging()"
+                [class.is-invalid]="isValidField('pdf_files')" (dragover)="pdfFilesUpload.onDragOver($event)"
+                (dragleave)="pdfFilesUpload.onDragLeave($event)" (drop)="onPdfDrop($event)">
+                <input type="file" accept=".pdf" multiple class="pp-upload__input-hidden" id="pdf_files"
+                  (change)="onPdfSelected($event)" />
+                <label for="pdf_files" class="pp-dropzone__label">
+                  <i class="bi bi-cloud-arrow-up-fill"></i>
+                  <span class="pp-dropzone__title">Arrastra tus PDF aquí o haz clic para buscarlos</span>
+                  <span class="pp-dropzone__hint">Máximo 2 archivos · .pdf · hasta 2MB cada uno</span>
+                </label>
+              </div>
+              }
+              @if (isValidField('pdf_files')) {
+              <div class="invalid-feedback d-block">{{ getFieldError('pdf_files') }}</div>
+              }
+              @if (pdfFilesRejected()) {
+              <div class="invalid-feedback d-block">{{ pdfFilesRejected() }}</div>
+              }
+
+              @if (pdfFilesUpload.files().length) {
+              <ul class="pp-file-list">
+                @for (file of pdfFilesUpload.files(); track file.name + $index) {
+                <li class="pp-file-list__item">
+                  <i class="bi bi-file-earmark-pdf-fill"></i>
+                  <div class="pp-file-list__info">
+                    <span class="pp-file-list__name">{{ file.name }}</span>
+                    <span class="pp-file-list__size">{{ formatSize(file.size) }}</span>
+                  </div>
+                  <button type="button" class="pp-file-list__remove" (click)="pdfFilesUpload.remove($index)">
+                    <i class="bi bi-trash3"></i>
+                  </button>
+                </li>
+                }
+              </ul>
+              }
+            </div>
+          </div>
+
+          <div [hidden]="currentStep() !== 3">
+            <app-cfdi-result [trackId]="trackId() ?? ''" [division]="division()" [cfdiInfo]="cfdiInfo()"
+              successMessage="El CFDI fue localizado correctamente. Se ha generado el siguiente Track ID:"
+              (download)="downloadPdf()" />
+          </div>
+
+        </div>
+
+        @if (currentStep() !== 3) {
+        <div class="pp-wizard__actions">
+          <button type="button" class="pp-wizard__btn pp-wizard__btn--ghost" (click)="prevStep()"
+            [disabled]="currentStep() === 1">
+            <i class="bi bi-arrow-left"></i> Atrás
+          </button>
+          <button type="button" class="pp-wizard__btn pp-wizard__btn--primary" (click)="nextStep()">
+            {{ currentStep() === 1 ? 'Continuar' : 'Finalizar' }}
+            <i class="bi bi-arrow-right"></i>
+          </button>
+        </div>
+        } @else {
+        <div class="pp-wizard__actions pp-wizard__actions--end">
+          <button type="button" class="pp-wizard__btn pp-wizard__btn--primary" (click)="resetWizard()">
+            <i class="bi bi-arrow-repeat"></i> Nueva solicitud
+          </button>
+        </div>
+        }
+      </div>
+    </form>
+  </div>
+</main>

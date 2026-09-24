@@ -1,0 +1,26 @@
+<div class="pp-wizard__stepper">
+  @for (step of steps(); track step.label; let i = $index; let last = $last) {
+  <button
+    type="button"
+    class="pp-wizard__step"
+    [class.is-active]="isActive(i)"
+    [class.is-complete]="isComplete(i)"
+    (click)="onStepClick(i)"
+  >
+    <span class="pp-wizard__circle">
+      @if (isComplete(i)) {
+      <i class="bi bi-check-lg"></i>
+      } @else {
+      {{ i + 1 }}
+      }
+    </span>
+    <span class="pp-wizard__label">{{ step.label }}</span>
+  </button>
+
+  @if (!last) {
+  <div class="pp-wizard__track">
+    <span class="pp-wizard__track-fill" [style.width.%]="trackFillWidth(i)"></span>
+  </div>
+  }
+  }
+</div>

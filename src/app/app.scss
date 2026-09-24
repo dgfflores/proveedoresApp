@@ -1,0 +1,95 @@
+$parker-gold: #FDB913;
+$charcoal: #1C2B39;
+$purpose-blue: #0082C4;
+$deep-blue: #003468;
+$clean-green: #7BBA3E;
+$orange: #F79228;
+$teal: #00A7B5;
+
+$header-navy: #0A1826;
+$track-bg: #e5e9ee;
+
+$primary: $purpose-blue;
+$secondary: #4F555C;
+$danger: #f98364;
+$warning: $orange;
+$info: $teal;
+$success: $clean-green;
+$dark: $charcoal;
+$light: #eff6ff;
+$text-muted: #6b7686;
+
+
+.btn-parker-gold {
+    background-color: $parker-gold;
+    border-color: $parker-gold;
+    color: $charcoal;
+    
+    &:hover {
+        background-color: darken($parker-gold, 10%);
+        border-color: darken($parker-gold, 10%);
+    }
+}
+
+.text-parker-gold {
+    color: $parker-gold;
+}
+
+.status-switch {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  cursor: pointer;
+  user-select: none;
+
+  input {
+    position: absolute;
+    opacity: 0;
+    width: 0;
+    height: 0;
+  }
+
+  &__track {
+    position: relative;
+    width: 38px;
+    height: 22px;
+    border-radius: 999px;
+    background: #d5dbe3;
+    transition: background 0.18s ease;
+    flex-shrink: 0;
+  }
+
+  &__thumb {
+    position: absolute;
+    top: 2px;
+    left: 2px;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background: #fff;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.25);
+    transition: transform 0.18s ease;
+  }
+
+  input:checked + &__track {
+    background: $success;
+  }
+
+  input:checked + &__track &__thumb {
+    transform: translateX(16px);
+  }
+
+  input:focus-visible + &__track {
+    box-shadow: 0 0 0 3px rgba($primary, 0.25);
+  }
+
+  &__label {
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: $text-muted;
+
+    &--on {
+      color: $success;
+    }
+  }
+}

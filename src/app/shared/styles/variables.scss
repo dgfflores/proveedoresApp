@@ -1,0 +1,24 @@
+$parker-gold: #FDB913;
+$charcoal: #1C2B39;
+$purpose-blue: #0082C4;
+$deep-blue: #003468;
+$clean-green: #7BBA3E;
+$orange: #F79228;
+$teal: #00A7B5;
+$header-navy: #0A1826;
+$text-muted: #6b7686;
+$track-bg: #e5e9ee;
+
+@mixin respond($bp) {
+  @if $bp ==md {
+    @media (max-width: 991.98px) {
+      @content;
+    }
+  }
+
+  @if $bp ==sm {
+    @media (max-width: 575.98px) {
+      @content;
+    }
+  }
+}

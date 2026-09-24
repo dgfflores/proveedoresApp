@@ -1,0 +1,142 @@
+<main class="pp-main">
+    <div class="pp-wizard mt-3">
+
+        <app-wizard-stepper [steps]="[{ label: 'INFORMACIÓN' }, { label: 'RESULTADO' }]" [current]="currentStep()"
+            (stepClick)="goToStep($event)" />
+
+        <form [formGroup]="myForm" autocomplete="off">
+            <div class="pp-wizard__card">
+                <div class="pp-wizard__body">
+
+                    <div [hidden]="currentStep() !== 1">
+                        <div class="row gx-3 gy-3">
+                            <div class="col-md-6">
+                                <label for="rfc_receptor" class="form-label">RFC receptor:</label>
+                                <input type="text" class="form-control form-control-sm text-uppercase" id="rfc_receptor"
+                                    maxlength="13" formControlName="rfc_receptor" placeholder="XAXX010101000"
+                                    [ngClass]="{'is-invalid': isValidField('rfc_receptor')}" autocomplete="off" />
+                                @if (isValidField('rfc_receptor')) {
+                                <div class="invalid-feedback">{{ getFieldError('rfc_receptor') }}</div>
+                                }
+                            </div>
+
+                            <div class="col-md-6">
+                                <label for="razon_social" class="form-label">División:</label>
+                                <ng-select [items]="companiesService.companiesListSignal()" bindLabel="bussiness_name"
+                                    bindValue="id" placeholder="Seleccione una razón social"
+                                    formControlName="razon_social"
+                                    [ngClass]="{'is-invalid': isValidField('razon_social')}" [clearable]="true"
+                                    [searchable]="true" [loading]="!companiesService.companiesListSignal().length"
+                                    loadingText="Cargando razones sociales..."
+                                    notFoundText="No se encontraron resultados">
+                                    <ng-template ng-option-tmp let-item="item">
+                                        <div class="construction-option">
+                                            <div class="fw-semibold">{{ item.bussiness_name }}</div>
+                                            <small class="text-muted">{{ item.rfc }}</small>
+                                        </div>
+                                    </ng-template>
+                                </ng-select>
+                                @if (isValidField('razon_social')) {
+                                <div class="invalid-feedback d-block">{{ getFieldError('razon_social') }}</div>
+                                }
+                            </div>
+
+                            <div class="col-md-6">
+                                <label for="email_acuse" class="form-label">Correo destinatario del acuse:</label>
+                                <input type="email" class="form-control form-control-sm" id="email_acuse"
+                                    formControlName="email_acuse"
+                                    [ngClass]="{'is-invalid': isValidField('email_acuse')}"
+                                    autocomplete="new-password" />
+                                @if (isValidField('email_acuse')) {
+                                <div class="invalid-feedback">{{ getFieldError('email_acuse') }}</div>
+                                }
+                            </div>
+
+                            <div class="col-md-6">
+                                <label for="email_acuse_confirm" class="form-label">Confirmar correo:</label>
+                                <input type="email" class="form-control form-control-sm" id="email_acuse_confirm"
+                                    formControlName="email_acuse_confirm" (paste)="blockPaste($event)"
+                                    (copy)="blockPaste($event)" (drop)="blockPaste($event)"
+                                    [ngClass]="{'is-invalid': isValidField('email_acuse_confirm')}"
+                                    autocomplete="new-password" />
+                                @if (isValidField('email_acuse_confirm')) {
+                                <div class="invalid-feedback">{{ getFieldError('email_acuse_confirm') }}</div>
+                                }
+                            </div>
+
+                            <div class="col-md-12">
+                                <label class="form-label">Archivo ZIP:</label>
+
+                                @if (!zipUpload.fileName()) {
+                                <div class="pp-dropzone" [class.is-dragging]="zipUpload.isDragging()"
+                                    [class.is-invalid]="isValidField('zip_file')"
+                                    (dragover)="zipUpload.onDragOver($event)"
+                                    (dragleave)="zipUpload.onDragLeave($event)" (drop)="zipUpload.onDrop($event)">
+                                    <input type="file" accept=".zip" class="pp-upload__input-hidden" id="zip_file"
+                                        (change)="zipUpload.onSelected($event)" />
+                                    <label for="zip_file" class="pp-dropzone__label">
+                                        <i class="bi bi-file-earmark-zip-fill"></i>
+                                        <span class="pp-dropzone__title">Arrastra tu ZIP aquí o haz clic para
+                                            buscarlo</span>
+                                        <span class="pp-dropzone__hint">Formato permitido: .zip</span>
+                                    </label>
+                                </div>
+                                } @else {
+                                <div class="pp-upload__xml">
+                                    <div class="pp-upload__file">
+                                        <i class="bi bi-file-earmark-check-fill"></i>
+                                        <span class="pp-upload__file-name">{{ zipUpload.fileName() }}</span>
+                                        <button type="button" class="pp-upload__remove" (click)="zipUpload.remove()">
+                                            <i class="bi bi-x-lg"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                                }
+
+                                @if (isValidField('zip_file')) {
+                                <div class="invalid-feedback d-block">{{ getFieldError('zip_file') }}</div>
+                                }
+                            </div>
+                        </div>
+                    </div>
+
+                    <div [hidden]="currentStep() !== 2">
+                        <div class="pp-result">
+                            <i class="bi bi-check-circle-fill pp-result__icon"></i>
+                            <p class="pp-result__text">
+                                Tu archivo ZIP fue recibido correctamente.
+                            </p>
+
+                            @if (division()) {
+                            <div class="pp-result__division">
+                                <i class="bi bi-diagram-3-fill"></i>
+                                <span>División: <strong>{{ division() }}</strong></span>
+                            </div>
+                            }
+
+                            <p class="pp-result__text">
+                                En cuanto culmine la validación, recibirás un correo electrónico con el estatus de
+                                tu solicitud.
+                            </p>
+                        </div>
+                    </div>
+
+                </div>
+
+                @if (currentStep() !== 2) {
+                <div class="pp-wizard__actions pp-wizard__actions--end">
+                    <button type="button" class="pp-wizard__btn pp-wizard__btn--primary" (click)="nextStep()">
+                        Enviar <i class="bi bi-arrow-right"></i>
+                    </button>
+                </div>
+                } @else {
+                <div class="pp-wizard__actions pp-wizard__actions--end">
+                    <button type="button" class="pp-wizard__btn pp-wizard__btn--primary" (click)="resetWizard()">
+                        <i class="bi bi-arrow-repeat"></i> Nueva solicitud
+                    </button>
+                </div>
+                }
+            </div>
+        </form>
+    </div>
+</main>

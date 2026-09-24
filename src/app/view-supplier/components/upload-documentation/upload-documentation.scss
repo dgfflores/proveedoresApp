@@ -1,0 +1,66 @@
+@use "../../../shared/styles/variables.scss" as *;
+
+:host {
+  font-family: 'Pragmatica', var(--bs-body-font-family, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif);
+}
+.max-w-none {
+  max-width: 100% !important;
+}
+
+.pp-wizard__card--wide {
+  max-width: 100% !important;
+  width: 100%;
+}
+
+.pp-timer-alert {
+  background-color: #e8f4fd;
+  border: 1px solid #b6e0fe;
+  border-left: 4px solid #0082c4;
+  color: #1c2b39;
+  padding: 0.85rem 1.1rem;
+  border-radius: 8px;
+
+  &--warning {
+    background-color: #fff3cd;
+    border-color: #ffe69c;
+    border-left-color: #ffc107;
+    color: #664d03;
+  }
+}
+
+.pp-timer-badge {
+  background-color: #003468;
+  color: #ffffff;
+  padding: 0.4rem 0.8rem;
+  border-radius: 6px;
+  font-family: monospace;
+  font-size: 0.9rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.pp-upload-field {
+  background-color: #f8f9fa;
+  transition: all 0.2s ease-in-out;
+
+  &--uploaded {
+    background-color: #f0fdf4;
+    border-color: #bbf7d0 !important;
+  }
+
+  &--invalid {
+    background-color: #fef2f2;
+    border-color: #fecaca !important;
+  }
+}
+
+.cursor-pointer {
+  cursor: pointer;
+}
+
+.fs-10 { font-size: 0.65rem !important; }
+.fs-11 { font-size: 0.75rem !important; }
+.fs-12 { font-size: 0.82rem !important; }
+.fs-13 { font-size: 0.88rem !important; }

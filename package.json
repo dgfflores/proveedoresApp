@@ -1,0 +1,43 @@
+{
+  "name": "proveedores-app",
+  "version": "0.0.0",
+  "scripts": {
+    "ng": "ng",
+    "start": "ng serve",
+    "build": "ng build",
+    "watch": "ng build --watch --configuration development",
+    "test": "ng test"
+  },
+  "private": true,
+  "packageManager": "pnpm@9.0.0",
+  "dependencies": {
+    "@angular/common": "^22.0.0",
+    "@angular/compiler": "^22.0.0",
+    "@angular/core": "^22.0.0",
+    "@angular/forms": "^22.0.0",
+    "@angular/platform-browser": "^22.0.0",
+    "@angular/router": "^22.0.0",
+    "@ng-select/ng-select": "^23.2.0",
+    "angularx-flatpickr": "^8.1.0",
+    "bootstrap": "^5.3.8",
+    "flatpickr": "^4.6.13",
+    "ngx-bootstrap": "^21.2.1",
+    "rxjs": "~7.8.0",
+    "simplebar-angular": "^3.3.2",
+    "sweetalert2": "^11.0.17",
+    "tslib": "^2.3.0",
+    "xlsx-js-style": "^1.2.0"
+  },
+  "devDependencies": {
+    "@angular/build": "^22.0.5",
+    "@angular/cli": "^22.0.5",
+    "@angular/compiler-cli": "^22.0.0",
+    "jsdom": "^28.0.0",
+    "prettier": "^3.8.1",
+    "typescript": "~6.0.2",
+    "vitest": "^4.0.8"
+  },
+  "overrides": {
+    "@hono/node-server": "^2.0.5"
+  }
+}

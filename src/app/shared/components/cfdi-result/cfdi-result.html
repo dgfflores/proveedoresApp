@@ -1,0 +1,56 @@
+<div class="pp-result">
+  <i class="bi bi-check-circle-fill pp-result__icon"></i>
+  <p class="pp-result__text">{{ successMessage() }}</p>
+
+  <div class="pp-result__trackid">
+    <span>{{ trackId() }}</span>
+    <button type="button" class="pp-result__copy" (click)="copyTrackId()" title="Copiar Track ID">
+      <i class="bi bi-clipboard"></i>
+    </button>
+  </div>
+
+  @if (division()) {
+  <div class="pp-result__division">
+    <i class="bi bi-diagram-3-fill"></i>
+    <span>División: <strong>{{ division() }}</strong></span>
+  </div>
+  }
+
+  @if (cfdiInfo(); as info) {
+  <div class="pp-result__info">
+    <div class="pp-result__info-item">
+      <span class="pp-result__info-label">UUID</span>
+      <span class="pp-result__info-value">{{ info.uuid }}</span>
+    </div>
+    <div class="pp-result__info-item">
+      <span class="pp-result__info-label">RFC Receptor</span>
+      <span class="pp-result__info-value">{{ info.rfcReceptor }}</span>
+    </div>
+    <div class="pp-result__info-item">
+      <span class="pp-result__info-label">Moneda</span>
+      <span class="pp-result__info-value">{{ info.moneda }}</span>
+    </div>
+    <div class="pp-result__info-item">
+      <span class="pp-result__info-label">Monto</span>
+      <span class="pp-result__info-value">{{ info.monto }}</span>
+    </div>
+  </div>
+  }
+
+  <div class="pp-result__barcode">
+    <svg [attr.viewBox]="'0 0 ' + (barcodeWidth() + 10) + ' 60'" xmlns="http://www.w3.org/2000/svg"
+      class="pp-result__barcode-svg" preserveAspectRatio="none">
+      @for (bar of barcodeBars(); track bar.x) {
+      <rect [attr.x]="bar.x + 5" y="0" [attr.width]="bar.width" height="46"></rect>
+      }
+    </svg>
+    <span class="pp-result__barcode-label">{{ trackId() }}</span>
+  </div>
+
+  <button type="button" class="pp-wizard__btn pp-wizard__btn--primary pp-result__download" (click)="onDownload()">
+    <i class="bi bi-file-earmark-arrow-down-fill"></i> Descargar PDF
+  </button>
+
+  <p class="pp-result__text">Conserve esta cadena para cualquier aclaración relacionada con este trámite.</p>
+  <p class="pp-result__text">Gracias por utilizar nuestros servicios.</p>
+</div>

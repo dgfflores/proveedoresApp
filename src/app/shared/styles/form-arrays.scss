@@ -1,0 +1,269 @@
+
+@import "../../app.scss";
+
+$border-color: #e2e8f0;
+$radius: 10px;
+$radius-sm: 6px;
+$shadow-card: 0 1px 2px rgba($charcoal, 0.04), 0 8px 24px -12px rgba($deep-blue, 0.18);
+
+:host {
+  display: block;
+  font-family: 'Inter', 'Segoe UI', system-ui, -apple-system, sans-serif;
+  color: $charcoal;
+}
+
+.card__header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1.5rem;
+  padding: 1.2rem 1.2rem;
+  color: #fff;
+  flex-wrap: wrap;
+}
+
+.card__title {
+  h2 {
+    margin: 0.1rem 0 0.3rem;
+    font-size: 1.375rem;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+  }
+}
+
+.card__eyebrow {
+  display: inline-block;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: $parker-gold;
+}
+
+.card__subtitle {
+  margin: 0;
+  font-size: 0.85rem;
+  color: rgba(#fff, 0.75);
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  border: none;
+  border-radius: $radius-sm;
+  padding: 0.55rem 1rem;
+  cursor: pointer;
+  transition: background 0.15s ease, box-shadow 0.15s ease, transform 0.05s ease;
+  white-space: nowrap;
+
+  &:active {
+    transform: translateY(1px);
+  }
+}
+
+.btn-add {
+  background: $parker-gold;
+  color: $charcoal;
+
+  &:hover {
+    background: darken($parker-gold, 5%);
+  }
+
+  &--ghost {
+    background: transparent;
+    color: $primary;
+    border: 1.5px dashed $primary;
+
+    &:hover {
+      background: rgba($primary, 0.06);
+    }
+  }
+}
+
+.btn-primary {
+  background: $primary;
+  color: #fff;
+
+  &:hover {
+    background: $deep-blue;
+  }
+}
+
+.btn-outline {
+  background: transparent;
+  color: $secondary;
+  border: 1px solid $border-color;
+
+  &:hover {
+    background: #f5f7fa;
+    border-color: darken($border-color, 8%);
+  }
+}
+
+.btn-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: $radius-sm;
+  border: 1px solid $border-color;
+  background: #fff;
+  color: $secondary;
+  cursor: pointer;
+  transition: all 0.15s ease;
+
+  &:hover {
+    background: rgba($danger, 0.08);
+  }
+
+  &--danger {
+    color: $danger;
+    border-color: rgba($danger, 0.35);
+
+    &:hover {
+      background: $danger;
+      color: #fff;
+      border-color: $danger;
+    }
+  }
+}
+
+.card-body {
+  padding: 1.5rem 1.75rem 1rem;
+}
+
+.table-responsive.table-card {
+  border: 1px solid $border-color;
+  border-radius: $radius-sm;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.table {
+  width: 100%;
+  min-width: 640px;
+  border-collapse: collapse;
+  margin: 0;
+
+  thead th {
+    background: #f7f9fc;
+    color: $text-muted;
+    text-transform: uppercase;
+    font-size: 0.7rem;
+    letter-spacing: 0.06em;
+    font-weight: 700;
+    padding: 0.75rem 1rem;
+    border-bottom: 1px solid $border-color;
+    text-align: left;
+    white-space: nowrap;
+  }
+
+  tbody tr {
+    transition: background 0.12s ease;
+
+    &:not(:last-child) td {
+      border-bottom: 1px solid $border-color;
+    }
+
+    &:hover:not(.empty-row) {
+      background: rgba($primary, 0.035);
+    }
+  }
+
+  td {
+    padding: 0.65rem 1rem;
+    vertical-align: top;
+  }
+
+  .col-code { width: 160px; }
+  .col-status { width: 150px; }
+  .col-actions { width: 90px; }
+}
+
+.form-control {
+  width: 100%;
+  border: 1px solid $border-color;
+  border-radius: $radius-sm;
+  padding: 0.5rem 0.7rem;
+  font-size: 0.875rem;
+  color: $charcoal;
+  background: #fff;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+
+  &:focus {
+    outline: none;
+    border-color: $primary;
+    box-shadow: 0 0 0 3px rgba($primary, 0.15);
+  }
+
+  &.is-invalid {
+    border-color: $danger;
+
+    &:focus {
+      box-shadow: 0 0 0 3px rgba($danger, 0.15);
+    }
+  }
+}
+
+.field-error {
+  display: block;
+  margin-top: 0.3rem;
+  font-size: 0.72rem;
+  color: $danger;
+  font-weight: 500;
+}
+
+
+.empty-row td {
+  border-bottom: none;
+}
+
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 2.5rem 1rem;
+  color: $text-muted;
+
+  svg {
+    color: #c3ccd6;
+  }
+
+  p {
+    margin: 0;
+    font-size: 0.875rem;
+  }
+}
+
+.form-alert {
+  margin-top: 1rem;
+  padding: 0.7rem 1rem;
+  border-radius: $radius-sm;
+  background: rgba($danger, 0.1);
+  color: darken($danger, 20%);
+  font-size: 0.85rem;
+  font-weight: 500;
+}
+
+.card__footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 1rem 1.75rem 1.5rem;
+  flex-wrap: wrap;
+}
+
+.card__count {
+  font-size: 0.8rem;
+  color: $text-muted;
+  font-weight: 500;
+}
+
+.card__actions {
+  display: flex;
+  gap: 0.6rem;
+}

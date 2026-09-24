@@ -1,0 +1,10 @@
+@if (loaderService.isLoading()) {
+<div class="loader-overlay">
+    <div class="loader">
+        <img src="./images/logo-dark.png" alt="" />
+        <div class="loading-text">Cargando<span class="dots">...</span></div>
+    </div>
+</div>
+}
+
+<router-outlet />

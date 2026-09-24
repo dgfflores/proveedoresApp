@@ -1,0 +1,122 @@
+    <section class="pp-hero">
+        <div class="pp-hero__particles" aria-hidden="true">
+            <span class="pp-dot d1"></span>
+            <span class="pp-dot d2"></span>
+            <span class="pp-dot d3"></span>
+            <span class="pp-dot d4"></span>
+            <span class="pp-dot d5"></span>
+            <span class="pp-dot d6"></span>
+            <span class="pp-dot d7"></span>
+            <span class="pp-dot d8"></span>
+            <span class="pp-line l1"></span>
+            <span class="pp-line l2"></span>
+        </div>
+
+        <div class="pp-hero__left">
+            <h1 class="pp-hero__headline">
+                ENGINEERING<br />
+                <span class="pp-hero__headline-row">
+                    <span class="pp-word-your">YOUR</span>
+                    <span class="pp-word-success">SUCCESS.</span>
+                </span>
+            </h1>
+            <span class="pp-hero__rule"></span>
+            <p class="pp-hero__text">
+                Juntos construimos un futuro más eficiente. Enviamos, validamos y gestionamos tus documentos
+                <strong>de manera segura, rápida y confiable.</strong>
+            </p>
+        </div>
+
+        <div class="pp-hero__illustration">
+            <div class="pp-orb">
+                <div class="pp-orb__halo"></div>
+                <div class="pp-orb__sphere"></div>
+                <img class="pp-orb__image" src="./images/nubef.png" alt="Documento validado en la nube"
+                    loading="eager" />
+            </div>
+        </div>
+
+        <div class="pp-hero__cta">
+            <span class="pp-hero__cta-icon" aria-hidden="true">
+                <i class="bi bi-cloud-arrow-up"></i>
+            </span>
+            <h2>ENVIAR CFDI</h2>
+            <p>VALIDACIÓN RÁPIDA</p>
+            <button type="button" class="pp-btn-hero" (click)="loadInvoice()">
+                ENVIAR AHORA
+                <i class="bi bi-chevron-right pp-btn-hero__icon" aria-hidden="true"></i>
+            </button>
+        </div>
+    </section>
+
+    <section class="pp-services" #revealSection>
+        <span class="pp-divider" aria-hidden="true"></span>
+
+        <div class="pp-services__grid">
+            <article class="pp-card pp-card--blue">
+                <button type="button" class="pp-card__stretched-link" aria-label="Enviar CFDI"
+                    (click)="loadInvoice()"></button>
+                <span class="pp-card__icon">
+                    <i class="bi bi-cloud-arrow-up-fill pp-card__icon-glyph pp-card__icon-glyph--float"></i>
+                </span>
+                <h2>ENVIAR CFDI</h2>
+                <p>
+                    Envía tus CFDI a cualquiera de nuestras empresas de forma
+                    <strong>rápida y segura.</strong>
+                </p>
+                <div class="pp-card__footer-line">
+                    <span class="pp-card__arrow"><i class="bi bi-arrow-right"></i></span>
+                </div>
+            </article>
+
+            <article class="pp-card pp-card--green">
+                <button type="button" class="pp-card__stretched-link" aria-label="Recuperar documentos"
+                    (click)="recoveryTrack()"></button>
+                <span class="pp-card__icon">
+                    <i class="bi bi-file-earmark-check-fill pp-card__icon-glyph"></i>
+                    <i class="bi bi-gear-fill pp-card__icon-gear"></i>
+                </span>
+                <h2>RECUPERAR DOCUMENTOS</h2>
+                <p>
+                    Obtén el PDF o <strong>Track ID</strong> de validaciones realizadas
+                    <strong>anteriormente.</strong>
+                </p>
+                <div class="pp-card__footer-line">
+                    <span class="pp-card__arrow"><i class="bi bi-arrow-right"></i></span>
+                </div>
+            </article>
+
+
+
+            <article class="pp-card pp-card--teal">
+                <button type="button" class="pp-card__stretched-link" aria-label="Carga Masiva"
+                    (click)="bulkUpload()"></button>
+                <span class="pp-card__icon">
+                    <i class="bi bi-layers-half pp-card__icon-glyph pp-card__icon-glyph--float"></i>
+                </span>
+                <h2>CARGA MASIVA</h2>
+                <p>
+                    Sube múltiples comprobantes o XMLs de forma
+                    <strong>simultánea y automatizada.</strong>
+                </p>
+                <div class="pp-card__footer-line">
+                    <span class="pp-card__arrow"><i class="bi bi-arrow-right"></i></span>
+                </div>
+            </article>
+
+            <article class="pp-card pp-card--orange">
+                <button type="button" class="pp-card__stretched-link" aria-label="Soporte"></button>
+                <span class="pp-card__icon">
+                    <i class="bi bi-headset pp-card__icon-glyph pp-card__icon-glyph--nod"></i>
+                </span>
+                <h2>SOPORTE</h2>
+                <p>
+                    Nuestro equipo está listo para ayudarte en cualquier
+                    <strong>momento.</strong>
+                </p>
+                <div class="pp-card__footer-line">
+                    <span class="pp-card__arrow"><i class="bi bi-arrow-right"></i></span>
+                </div>
+            </article>
+        </div>
+    </section>
