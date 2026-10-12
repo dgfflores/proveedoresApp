@@ -22,17 +22,19 @@
 
                             <div class="col-md-6">
                                 <label for="razon_social" class="form-label">División:</label>
-                                <ng-select [items]="companiesService.companiesListSignal()" bindLabel="bussiness_name"
-                                    bindValue="id" placeholder="Seleccione una razón social"
-                                    formControlName="razon_social"
+                                <ng-select [items]="invoicesService.clasificationOptions()" bindLabel="label"
+                                    bindValue="id" placeholder="Seleccione una división" formControlName="razon_social"
                                     [ngClass]="{'is-invalid': isValidField('razon_social')}" [clearable]="true"
-                                    [searchable]="true" [loading]="!companiesService.companiesListSignal().length"
-                                    loadingText="Cargando razones sociales..."
-                                    notFoundText="No se encontraron resultados">
+                                    [searchable]="true" [loading]="!invoicesService.clasificationOptions().length"
+                                    loadingText="Cargando divisiones..." notFoundText="No se encontraron resultados">
+                                    <ng-template ng-label-tmp let-item="item">
+                                        <span class="d-block text-truncate">{{ item.name }} · {{ item.location }}</span>
+                                    </ng-template>
                                     <ng-template ng-option-tmp let-item="item">
-                                        <div class="construction-option">
-                                            <div class="fw-semibold">{{ item.bussiness_name }}</div>
-                                            <small class="text-muted">{{ item.rfc }}</small>
+                                        <div class="p-1">
+                                            <div class="fw-semibold text-wrap">{{ item.name }}</div>
+                                            <small class="text-muted d-block">{{ item.location }} · RFC: {{ item.rfc
+                                                }}</small>
                                         </div>
                                     </ng-template>
                                 </ng-select>
@@ -65,36 +67,53 @@
                             </div>
 
                             <div class="col-md-12">
-                                <label class="form-label">Archivo ZIP:</label>
+                                <label class="form-label">
+                                    Archivos XML:
+                                    <small class="text-muted">({{ xmlUpload.files().length }}/{{ maxFiles }})</small>
+                                </label>
 
-                                @if (!zipUpload.fileName()) {
-                                <div class="pp-dropzone" [class.is-dragging]="zipUpload.isDragging()"
-                                    [class.is-invalid]="isValidField('zip_file')"
-                                    (dragover)="zipUpload.onDragOver($event)"
-                                    (dragleave)="zipUpload.onDragLeave($event)" (drop)="zipUpload.onDrop($event)">
-                                    <input type="file" accept=".zip" class="pp-upload__input-hidden" id="zip_file"
-                                        (change)="zipUpload.onSelected($event)" />
-                                    <label for="zip_file" class="pp-dropzone__label">
-                                        <i class="bi bi-file-earmark-zip-fill"></i>
-                                        <span class="pp-dropzone__title">Arrastra tu ZIP aquí o haz clic para
-                                            buscarlo</span>
-                                        <span class="pp-dropzone__hint">Formato permitido: .zip</span>
+                                <div class="pp-dropzone" [class.is-dragging]="xmlUpload.isDragging()"
+                                    [class.is-invalid]="isValidField('xml_files')"
+                                    (dragover)="xmlUpload.onDragOver($event)"
+                                    (dragleave)="xmlUpload.onDragLeave($event)" (drop)="onXmlDrop($event)">
+                                    <input type="file" accept=".xml" multiple class="pp-upload__input-hidden"
+                                        id="xml_files" [disabled]="!xmlUpload.hasSlotsAvailable"
+                                        (change)="onXmlSelected($event)" />
+                                    <label for="xml_files" class="pp-dropzone__label">
+                                        <i class="bi bi-file-earmark-code-fill"></i>
+                                        <span class="pp-dropzone__title">Arrastra tus XML aquí o haz clic para
+                                            buscarlos</span>
+                                        <span class="pp-dropzone__hint">Formato permitido: .xml (máximo {{ maxFiles
+                                            }})</span>
                                     </label>
                                 </div>
-                                } @else {
-                                <div class="pp-upload__xml">
-                                    <div class="pp-upload__file">
-                                        <i class="bi bi-file-earmark-check-fill"></i>
-                                        <span class="pp-upload__file-name">{{ zipUpload.fileName() }}</span>
-                                        <button type="button" class="pp-upload__remove" (click)="zipUpload.remove()">
-                                            <i class="bi bi-x-lg"></i>
-                                        </button>
-                                    </div>
+
+                                @if (rejectedFiles().length) {
+                                <div class="text-danger small mt-2">
+                                    @for (r of rejectedFiles(); track r.name) {
+                                    <div>{{ r.name }}: {{ r.reason === 'invalidExtension' ? 'no es un archivo .xml' :
+                                        'excede el tamaño permitido' }}</div>
+                                    }
                                 </div>
                                 }
 
-                                @if (isValidField('zip_file')) {
-                                <div class="invalid-feedback d-block">{{ getFieldError('zip_file') }}</div>
+                                @if (xmlUpload.files().length) {
+                                <div class="pp-upload__xml mt-2">
+                                    @for (file of xmlUpload.files(); track file.name + file.size + file.lastModified;
+                                    let i = $index) {
+                                    <div class="pp-upload__file">
+                                        <i class="bi bi-file-earmark-check-fill"></i>
+                                        <span class="pp-upload__file-name">{{ file.name }}</span>
+                                        <button type="button" class="pp-upload__remove" (click)="xmlUpload.remove(i)">
+                                            <i class="bi bi-x-lg"></i>
+                                        </button>
+                                    </div>
+                                    }
+                                </div>
+                                }
+
+                                @if (isValidField('xml_files')) {
+                                <div class="invalid-feedback d-block">{{ getFieldError('xml_files') }}</div>
                                 }
                             </div>
                         </div>

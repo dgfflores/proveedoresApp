@@ -5,6 +5,7 @@
       [current]="currentStep()" (stepClick)="goToStep($event)" />
 
     <form [formGroup]="myForm" autocomplete="off">
+      <pre>{{ myForm.value | json }}</pre>
       <div class="pp-wizard__card">
         <div class="pp-wizard__body">
 
@@ -21,28 +22,31 @@
               </div>
 
               <div class="col-md-6">
-                <label for="razon_social" class="form-label">División:</label>
-                <ng-select [items]="companiesService.companiesListSignal()" bindLabel="bussiness_name" bindValue="id"
-                  placeholder="Seleccione una razón social" formControlName="razon_social"
-                  [ngClass]="{'is-invalid': isValidField('razon_social')}" [clearable]="true" [searchable]="true"
-                  [loading]="!companiesService.companiesListSignal().length" loadingText="Cargando razones sociales..."
+                <label for="clasification_id" class="form-label">División:</label>
+                <ng-select [items]="invoiceService.clasificationOptions()" bindLabel="label" bindValue="id"
+                  placeholder="Seleccione una división" formControlName="clasification_id"
+                  [ngClass]="{'is-invalid': isValidField('clasification_id')}" [clearable]="true" [searchable]="true"
+                  [loading]="!invoiceService.clasificationOptions().length" loadingText="Cargando divisiones..."
                   notFoundText="No se encontraron resultados">
+                  <ng-template ng-label-tmp let-item="item">
+                    <span class="d-block text-truncate">{{ item.name }} · {{ item.location }}</span>
+                  </ng-template>
                   <ng-template ng-option-tmp let-item="item">
-                    <div class="construction-option">
-                      <div class="fw-semibold">{{ item.bussiness_name }}</div>
-                      <small class="text-muted">{{ item.rfc }}</small>
+                    <div class="p-1">
+                      <div class="fw-semibold text-wrap">{{ item.name }}</div>
+                      <small class="text-muted d-block">{{ item.location }} · RFC: {{ item.rfc }}</small>
                     </div>
                   </ng-template>
                 </ng-select>
-                @if (isValidField('razon_social')) {
-                <div class="invalid-feedback d-block">{{ getFieldError('razon_social') }}</div>
+                @if (isValidField('clasification_id')) {
+                <div class="invalid-feedback d-block">{{ getFieldError('clasification_id') }}</div>
                 }
               </div>
 
               <div class="col-md-6">
                 <label for="email_acuse" class="form-label">Correo destinatario del acuse:</label>
                 <input type="email" class="form-control form-control-sm" id="email_acuse" formControlName="email_acuse"
-                  [ngClass]="{'is-invalid': isValidField('email_acuse')}" autocomplete="new-password" />
+                  [ngClass]="{'is-invalid': isValidField('email_acuse')}" autocomplete="off" />
                 @if (isValidField('email_acuse')) {
                 <div class="invalid-feedback">{{ getFieldError('email_acuse') }}</div>
                 }
@@ -53,7 +57,7 @@
                 <input type="email" class="form-control form-control-sm" id="email_acuse_confirm"
                   formControlName="email_acuse_confirm" (paste)="blockPaste($event)" (copy)="blockPaste($event)"
                   (drop)="blockPaste($event)" [ngClass]="{'is-invalid': isValidField('email_acuse_confirm')}"
-                  autocomplete="new-password" />
+                  autocomplete="off" />
                 @if (isValidField('email_acuse_confirm')) {
                 <div class="invalid-feedback">{{ getFieldError('email_acuse_confirm') }}</div>
                 }

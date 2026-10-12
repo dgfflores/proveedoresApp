@@ -16,6 +16,28 @@ $white: #ffffff;
 $text-dark: #2c3e50;
 $shadow-color: rgba(46, 91, 117, 0.15);
 
+
+.swal2-popup {
+  font-family: 'Poppins', sans-serif;
+  border-radius: 16px;
+  padding: 2rem;
+}
+
+.swal2-title {
+  font-size: 1.4rem;
+  font-weight: 600;
+}
+
+.swal2-html-container {
+  font-size: 0.95rem;
+  color: #64748b;
+}
+
+.swal2-confirm {
+  border-radius: 8px;
+  padding: 0.65rem 1.5rem;
+}
+
 .fleet-nav {
   background: $white;
   padding: 0;

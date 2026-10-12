@@ -1,10 +1,9 @@
-import { Component, ElementRef, ViewChild, inject, signal } from '@angular/core';
+import { Component, ElementRef, ViewChild, computed, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { NgSelectModule } from '@ng-select/ng-select';
 import Swal from 'sweetalert2';
 import { PATRON_RFC } from '../../../shared/utils/expresions';
-import { CompaniesService } from '../../services/companies-service';
 import { generateDivision, generateMonto, generateUuid } from '../../../shared/utils/cfdi-mock.utils';
 import { CfdiResult } from '../../../shared/components/cfdi-result/cfdi-result';
 import { CfdiInfo } from '../../../shared/interfaces/status-view-invoice-interface';
@@ -15,6 +14,7 @@ import { checkFile, multiFileValidator, singleFileValidator } from '../../../sha
 import { fieldsMatchValidator } from '../../../shared/validators/cfdi.validators';
 import { SingleFileUpload } from '../../../shared/utils/single-file-upload';
 import { MultiFileUpload, RejectedFile } from '../../../shared/utils/multi-file-upload';
+import { InvoiceService } from '../../services/invoice-service';
 
 const MAX_PDF_FILES = 2;
 const MAX_PDF_SIZE_MB = 2;
@@ -29,7 +29,8 @@ const MAX_PDF_SIZE_BYTES = MAX_PDF_SIZE_MB * 1024 * 1024;
 })
 export class LoadInvoice {
   private readonly fb = inject(FormBuilder);
-  public readonly companiesService = inject(CompaniesService);
+  public readonly invoiceService = inject(InvoiceService);
+
 
   private readonly wizard = new WizardStep(3);
   public currentStep = this.wizard.current;
@@ -43,7 +44,7 @@ export class LoadInvoice {
 
   private readonly step1Fields = [
     'rfc_receptor',
-    'razon_social',
+    'clasification_id',
     'email_acuse',
     'email_acuse_confirm',
     'codigo_envio',
@@ -52,7 +53,7 @@ export class LoadInvoice {
   public myForm: FormGroup = this.fb.group(
     {
       rfc_receptor: ['', [Validators.required, Validators.pattern(PATRON_RFC)]],
-      razon_social: [null, [Validators.required]],
+      clasification_id: [null, [Validators.required]],
       email_acuse: ['', [Validators.required, Validators.email]],
       email_acuse_confirm: ['', [Validators.required, Validators.email]],
       codigo_envio: ['', [Validators.maxLength(10)]],
@@ -67,6 +68,10 @@ export class LoadInvoice {
   public readonly pdfUnicoUpload = new SingleFileUpload(this.myForm.get('pdf_unico'), /\.pdf$/i, MAX_PDF_SIZE_BYTES);
   public readonly pdfFilesUpload = new MultiFileUpload(this.myForm.get('pdf_files'), /\.pdf$/i, MAX_PDF_FILES, MAX_PDF_SIZE_BYTES);
   public readonly pdfFilesRejected = signal<string | null>(null);
+
+  constructor() {
+    this.invoiceService.setAllClasifications();
+  }
 
   goToStep(step: number): void {
     this.wizard.goTo(
@@ -92,15 +97,46 @@ export class LoadInvoice {
       return;
     }
 
-    if (this.banderaError) {
-      this.banderaError = false;
-      Swal.fire({ title: 'Error', text: 'La estructura del XML es inconsistente', icon: 'error' });
-      return;
-    }
+    const formValues = this.myForm.value;
 
-    this.trackId.set(this.generateTrackId());
-    this.buildResult();
-    this.currentStep.update((v) => v + 1);
+    Swal.fire({
+      title: 'Procesando factura...',
+      text: 'Por favor espera mientras validamos tus archivos',
+      allowOutsideClick: false,
+      didOpen: () => Swal.showLoading(),
+    });
+
+    console.log(formValues);
+    // return;
+
+    this.invoiceService.uploadInvoice(formValues).subscribe({
+      next: (res) => {
+        Swal.close();
+
+        this.trackId.set(this.generateTrackId());
+        this.buildResult();
+        this.currentStep.update((v) => v + 1);
+
+        if (res.data?.has_repse) {
+          Swal.fire({
+            title: 'Clave REPSE detectada',
+            text: res.message,
+            icon: 'info',
+          });
+        }
+      },
+      error: (err) => {
+        Swal.fire({
+          title: 'No se pudo procesar',
+          text: err.error?.message || 'Ocurrió un error al subir la factura y sus adjuntos.',
+          icon: 'error',
+        });
+      },
+    });
+
+    // this.trackId.set(this.generateTrackId());
+    // this.buildResult();
+    // this.currentStep.update((v) => v + 1);
   }
 
   prevStep(): void {
