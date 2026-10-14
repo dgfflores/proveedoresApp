@@ -10,19 +10,53 @@ export interface InvoiceUploadPayload {
 }
 
 export interface InvoiceUploadResponse {
+  success: boolean;
   message: string;
-  track_id: string;
-  division?: string;
-  cfdi_info?: {
-    uuid: string;
-    rfcReceptor: string;
-    moneda: string;
-    monto: number;
-  };
-  data?: {
-    has_repse: boolean;
-  };
+  data:    Data;
 }
+
+export interface Data {
+  has_repse: boolean;
+  invoice: InvoiceInterface;
+}
+
+export interface InvoiceInterface {
+    clasification_id: number;
+    supplier_id:      number;
+    track_id:         string;
+    uuid:             string;
+    total:            string;
+    code:             string;
+    serie:            string;
+    folio:            string;
+    payment_method:   string;
+    payment_form:     string;
+    currency:         string;
+    exchange_rate:    string;
+    date:             Date;
+    status_sat:       boolean;
+    status:           string;
+    is_masive:        boolean;
+    updated_at:       Date;
+    created_at:       Date;
+    id:               number;
+    supplier_rfc:     string;
+    division:         string;
+}
+// export interface InvoiceUploadResponse {
+//   message: string;
+//   invoice: string;
+//   division?: string;
+//   cfdi_info?: {
+//     uuid: string;
+//     rfcReceptor: string;
+//     moneda: string;
+//     monto: number;
+//   };
+//   data?: {
+//     has_repse: boolean;
+//   };
+// }
 
 export interface ClasificationInterface {
     id: number;

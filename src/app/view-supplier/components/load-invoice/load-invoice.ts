@@ -4,7 +4,7 @@ import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angula
 import { NgSelectModule } from '@ng-select/ng-select';
 import Swal from 'sweetalert2';
 import { PATRON_RFC } from '../../../shared/utils/expresions';
-import { generateDivision, generateMonto, generateUuid } from '../../../shared/utils/cfdi-mock.utils';
+// import { generateDivision, generateMonto, generateUuid } from '../../../shared/utils/cfdi-mock.utils';
 import { CfdiResult } from '../../../shared/components/cfdi-result/cfdi-result';
 import { CfdiInfo } from '../../../shared/interfaces/status-view-invoice-interface';
 import { isGroupValid, markFieldsTouched, WizardStep } from '../../../shared/utils/wizard-step';
@@ -113,8 +113,16 @@ export class LoadInvoice {
       next: (res) => {
         Swal.close();
 
-        this.trackId.set(this.generateTrackId());
         this.buildResult();
+
+        this.trackId.set(res.data!.invoice!.track_id);
+        this.division.set(res.data!.invoice!.division!);
+        this.cfdiInfo.set({
+          uuid: res.data!.invoice!.uuid,
+          rfcReceptor: (formValues.rfc_receptor as string)!.toUpperCase(),
+          moneda: 'MXN',
+          monto: res.data!.invoice!.total,
+        });
         this.currentStep.update((v) => v + 1);
 
         if (res.data?.has_repse) {
@@ -180,14 +188,15 @@ export class LoadInvoice {
   }
 
   private buildResult(): void {
-    const formValue = this.myForm.value;
-    this.division.set(generateDivision());
-    this.cfdiInfo.set({
-      uuid: generateUuid(),
-      rfcReceptor: (formValue.rfc_receptor as string)?.toUpperCase() ?? '',
-      moneda: 'MXN',
-      monto: generateMonto(),
-    });
+    // const formValue = this.myForm.value;
+    // this.trackId.set(this.generateTrackId());
+    // this.division.set(generateDivision());
+    // this.cfdiInfo.set({
+    //   uuid: generateUuid(),
+    //   rfcReceptor: (formValue.rfc_receptor as string)?.toUpperCase() ?? '',
+    //   moneda: 'MXN',
+    //   monto: generateMonto(),
+    // });
   }
 
   downloadPdf(): void {
