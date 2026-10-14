@@ -120,7 +120,7 @@ export class LoadInvoice {
         this.cfdiInfo.set({
           uuid: res.data!.invoice!.uuid,
           rfcReceptor: (formValues.rfc_receptor as string)!.toUpperCase(),
-          moneda: 'MXN',
+          moneda: res.data!.invoice!.currency!,
           monto: res.data!.invoice!.total,
         });
         this.currentStep.update((v) => v + 1);
