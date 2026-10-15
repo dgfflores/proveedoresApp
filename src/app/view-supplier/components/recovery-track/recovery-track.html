@@ -3,7 +3,7 @@
 
     <app-wizard-stepper [steps]="[{ label: 'INFORMACIÓN' }, { label: 'RESULTADO' }]" [current]="currentStep()"
       (stepClick)="goToStep($event)" />
-      
+
     <form [formGroup]="myForm" autocomplete="off">
       <div class="pp-wizard__card">
         <div class="pp-wizard__body">
@@ -16,7 +16,7 @@
                 <div>
                   <span class="fw-bold d-block fs-13 text-dark">¿Cómo consultar o recuperar tu comprobante?</span>
                   <span class="fs-12 text-muted">
-                    Ingresa tu <strong>RFC Receptor</strong> y puedes recuperar tu PDF utilizando tu
+                    Ingresa tu <strong>RFC Emisor</strong> y puedes recuperar tu PDF utilizando tu
                     <strong>UUID</strong> o tu <strong>Track ID</strong> (al menos uno de los dos es requerido).
                   </span>
                 </div>
@@ -25,7 +25,7 @@
 
             <div class="row gx-3 gy-3">
               <div class="col-md-6">
-                <label for="rfc_receptor" class="form-label">RFC receptor:</label>
+                <label for="rfc_receptor" class="form-label">RFC emisor:</label>
                 <input type="text" class="form-control form-control-sm text-uppercase" id="rfc_receptor" maxlength="13"
                   formControlName="rfc_receptor" placeholder="XAXX010101000"
                   [ngClass]="{'is-invalid': isValidField('rfc_receptor')}" autocomplete="off" />
@@ -54,6 +54,9 @@
                 }
               </div>
             </div>
+            @if (errorMessage()) {
+            <div class="alert alert-danger fs-12 mt-3 mb-0">{{ errorMessage() }}</div>
+            }
           </div>
 
           <div [hidden]="currentStep() !== 2">
@@ -66,9 +69,9 @@
 
         @if (currentStep() !== 2) {
         <div class="pp-wizard__actions">
-          <button type="button" class="pp-wizard__btn pp-wizard__btn--primary" (click)="nextStep()">
-            Consultar
-            <i class="bi bi-arrow-right"></i>
+          <button type="button" class="pp-wizard__btn pp-wizard__btn--primary" [disabled]="loading()"
+            (click)="nextStep()">
+            @if (loading()) { Consultando... } @else { Consultar <i class="bi bi-arrow-right"></i> }
           </button>
         </div>
         } @else {

@@ -76,3 +76,27 @@ export interface ClasificationResponse {
     message: string;
     statusCode: number;
 }
+
+export interface InvoiceLookupParams {
+  rfc_receptor: string;
+  uuid?: string;
+  track_id?: string;
+}
+
+export interface InvoiceLookup {
+  track_id: string;
+  uuid: string;
+  rfc_receptor: string;
+  currency: string;
+  total: string;
+  division: string | null;
+  status_sat: string | null;
+  date: string | null;
+}
+
+export interface InvoiceLookupResponse {
+  data: InvoiceLookup;
+  error: boolean;
+  message: string;
+  statusCode: number;
+}
