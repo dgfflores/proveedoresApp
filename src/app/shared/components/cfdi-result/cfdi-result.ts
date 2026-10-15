@@ -1,6 +1,7 @@
-import { Component, computed, input, output } from '@angular/core';
+import { Component, computed, effect, ElementRef, input, output, viewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { CfdiInfo } from '../../interfaces/status-view-invoice-interface';
+import JsBarcode from 'jsbarcode';
 
 interface BarcodeBar {
   x: number;
@@ -20,6 +21,23 @@ export class CfdiResult {
   public successMessage = input<string>('El CFDI fue procesado correctamente. Se ha generado el siguiente Track ID:');
 
   public download = output<void>();
+  private readonly barcodeEl = viewChild<ElementRef<SVGSVGElement>>('barcode');
+
+  constructor() {
+    effect(() => {
+      const el = this.barcodeEl()?.nativeElement;
+      const value = this.trackId();
+      if (!el || !value) return;
+
+      JsBarcode(el, value, {
+        format: 'CODE39',
+        width: 1,
+        height: 40,
+        displayValue: false,
+        margin: 0,
+      });
+    });
+  }
 
   public barcodeBars = computed<BarcodeBar[]>(() => {
     const value = this.trackId() ?? '';

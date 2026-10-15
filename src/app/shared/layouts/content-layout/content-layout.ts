@@ -9,12 +9,15 @@ import { CONFIGURATION } from '../../utils/theme';
   template: `
     <div class="pp-page">
       <header class="pp-topbar">
-        <div class="pp-topbar__brand">
+        <a routerLink="/views-supplier" class="pp-topbar__brand">
           <img src="./images/parker-ligthh.png" alt="Parker" class="pp-topbar__logo me-3" />
           <span class="pp-topbar__title ms-3">PORTAL DE PROVEEDORES</span>
-        </div>
-      </header>
+        </a>
 
+        <a routerLink="/views-supplier" class="pp-topbar__action" title="Inicio" aria-label="Ir al inicio">
+          <i class="bi bi-house"></i>
+        </a>
+      </header>
       <main class="pp-main">
         <router-outlet />
       </main>

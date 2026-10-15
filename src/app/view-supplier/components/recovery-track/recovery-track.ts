@@ -1,4 +1,4 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, DestroyRef, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { PATRON_RFC } from '../../../shared/utils/expresions';
@@ -9,7 +9,11 @@ import { isGroupValid, markFieldsTouched, WizardStep } from '../../../shared/uti
 import { getFormFieldError, isFieldInvalid } from '../../../shared/utils/form-error.utils';
 import { WizardStepper } from '../../../shared/components/wizard-stepper/wizard-stepper';
 import { oneOfRequiredValidator, trackIdLengthValidator, uuidValidator } from '../../../shared/validators/cfdi.validators';
-
+import { InvoiceLookup } from '../../interfaces/invoices-interface';
+import { InvoiceService } from '../../services/invoice-service';
+import { finalize } from 'rxjs';
+import { HttpErrorResponse } from '@angular/common/http';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 const TRACK_ID_LENGTH = 20;
 
@@ -27,8 +31,12 @@ export class RecoveryTrack {
   public trackId = signal<string | null>(null);
   public division = signal<string | null>(null);
   public cfdiInfo = signal<CfdiInfo | null>(null);
+  public loading = signal(false);
+  public errorMessage = signal<string | null>(null);
 
   private readonly step1Fields = ['rfc_receptor', 'uuid', 'track_id'];
+  private readonly destroyRef = inject(DestroyRef);
+private readonly invoiceService = inject(InvoiceService);
 
   public myForm: FormGroup = this.fb.group(
     {
@@ -40,21 +48,45 @@ export class RecoveryTrack {
   );
 
   goToStep(step: number): void {
-    this.wizard.goTo(
-      step,
-      () => this.isStep1Valid(),
-      () => this.markStep1Touched(),
-    );
+    if (step === 2) {
+      this.nextStep();
+      return;
+    }
+    this.wizard.goTo(step, () => true, () => { });
   }
 
   nextStep(): void {
-    const advanced = this.wizard.next(
-      () => this.isStep1Valid(),
-      () => this.markStep1Touched(),
-    );
-    if (advanced) this.buildResult();
-  }
+    if (this.loading()) return;
 
+    if (!this.isStep1Valid()) {
+      this.markStep1Touched();
+      return;
+    }
+
+    const { rfc_receptor, uuid, track_id } = this.myForm.value;
+
+    this.loading.set(true);
+    this.errorMessage.set(null);
+
+    this.invoiceService
+      .lookupInvoice({
+        rfc_receptor: rfc_receptor.trim().toUpperCase(),
+        uuid: uuid?.trim(),
+        track_id: track_id?.trim(),
+      })
+      .pipe(
+        finalize(() => this.loading.set(false)),
+        takeUntilDestroyed(this.destroyRef),
+      )
+      .subscribe({
+        next: (invoice) => {
+          this.applyResult(invoice);
+          this.wizard.next(() => true, () => { });
+        },
+        error: (err: HttpErrorResponse) =>
+          this.errorMessage.set(err.error?.message ?? 'No se pudo consultar el CFDI.'),
+      });
+  }
   prevStep(): void {
     this.wizard.prev();
   }
@@ -80,18 +112,14 @@ export class RecoveryTrack {
     });
   }
 
-  private buildResult(): void {
-    const formValue = this.myForm.value;
-    const trackId: string = (formValue.track_id as string)?.trim() || generateTrackId();
-    const uuid: string = (formValue.uuid as string)?.trim() || generateUuid();
-
-    this.trackId.set(trackId);
-    this.division.set(generateDivision());
+  private applyResult(invoice: InvoiceLookup): void {
+    this.trackId.set(invoice.track_id);
+    this.division.set(invoice.division);
     this.cfdiInfo.set({
-      uuid,
-      rfcReceptor: (formValue.rfc_receptor as string)?.toUpperCase() ?? '',
-      moneda: 'MXN',
-      monto: generateMonto(),
+      uuid: invoice.uuid,
+      rfcReceptor: invoice.rfc_receptor,
+      moneda: invoice.currency,
+      monto: invoice.total,
     });
   }
 

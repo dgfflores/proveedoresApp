@@ -32,18 +32,13 @@
     </div>
     <div class="pp-result__info-item">
       <span class="pp-result__info-label">Monto</span>
-      <span class="pp-result__info-value">{{ info.monto }}</span>
+      <span class="pp-result__info-value">{{ info.monto | currency }}</span>
     </div>
   </div>
   }
 
   <div class="pp-result__barcode">
-    <svg [attr.viewBox]="'0 0 ' + (barcodeWidth() + 10) + ' 60'" xmlns="http://www.w3.org/2000/svg"
-      class="pp-result__barcode-svg" preserveAspectRatio="none">
-      @for (bar of barcodeBars(); track bar.x) {
-      <rect [attr.x]="bar.x + 5" y="0" [attr.width]="bar.width" height="46"></rect>
-      }
-    </svg>
+    <svg #barcode></svg>
     <span class="pp-result__barcode-label">{{ trackId() }}</span>
   </div>
 
